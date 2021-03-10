@@ -1,0 +1,71 @@
+<div class="jumbotron col-sm-8 mx-auto">
+    <h1>Welcome to <span class="zf-green">Guest Book</span></h1>
+
+    <?php
+    $form = $this->form;
+
+    $form->getElements()['email']->setAttribute('class', 'form-control');
+    $form->getElements()['email']->setLabelAttributes(['class' => 'control-label']);
+    $form->getElements()['content']->setLabelAttributes(['class' => 'control-label']);
+    $form->getElements()['content']->setAttribute('class', 'form-control');
+
+    $form->prepare();
+
+    $formLabel = $this->plugin('formLabel');
+
+    $form->setAttribute('method', 'post');
+    ?>
+
+    <?= $this->form()->openTag($form); ?>
+
+    <?= $this->formElement($form->get('csrf')); ?> 
+
+    <div class="form-group">
+        <?php $email = $form->get('email'); ?>
+        <?= $this->formLabel($email); ?>
+        <div>
+            <?= $this->formEmail($email); ?>
+            <?= $this->formElementErrors($email); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <?php $content = $form->get('content'); ?>
+        <?= $this->formLabel($content); ?>
+        <div>
+            <?= $this->formTextarea($content); ?>
+            <?= $this->formElementErrors($content); ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary">Submit Message</button>
+        </div>
+    </div>
+
+    <?= $this->form()->closeTag(); ?> 
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col" style="width: 30%;">Email</th>
+      <th scope="col" style="width: 50%;">Message</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+  <?php foreach ($messages as $message): ?>
+    <tr>
+      <td><?= $this->escapeHtml($message->getGuestEmail()) ?></td>
+      <td><?= $this->escapeHtml($message->getContent()) ?></td>
+      <td><?= $this->escapeHtml($message->getDateCreated()) ?></td>
+    </tr>
+  <?php endforeach; ?>
+  </tbody>
+</table>
+
+<?= $this->paginationControl($messages, 'Sliding', 'application/partial/paginator', [
+  'route' => 'application'
+]); ?>
